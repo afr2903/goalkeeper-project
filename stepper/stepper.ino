@@ -39,13 +39,13 @@ void loop(){
     Serial.print(" y: ");
     Serial.println(analogRead(vry));
 
-    if( analogRead(vrx) < 520 && analogRead(vrx) > 480){
+    /*if( analogRead(vrx) < 520 && analogRead(vrx) > 480){
         digitalWrite(sEnable, HIGH);
     } else if( analogRead(vrx) > 520){
         moveRight();
     } else if( analogRead(vrx) < 480){
         moveLeft();
-    }
+    }*/
 }
 
 void pasos(){
