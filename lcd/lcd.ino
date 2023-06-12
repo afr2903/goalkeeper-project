@@ -1,50 +1,66 @@
-/*
- Demonstration sketch for Adafruit i2c/SPI LCD backpack
- using MCP23008 I2C expander
- ( https://learn.adafruit.com/i2c-spi-lcd-backpack )
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
 
- This sketch prints "Hello World!" to the LCD
- and shows the time.
+#if defined(ARDUINO) && ARDUINO >= 100
+#define printByte(args)  write(args);
+#else
+#define printByte(args)  print(args,BYTE);
+#endif
 
-  The circuit:
- * 5V to Arduino 5V pin
- * GND to Arduino GND pin
- * CLK to Analog #5
- * DAT to Analog #4
-*/
+uint8_t bell[8]  = {0x4,0xe,0xe,0xe,0x1f,0x0,0x4};
+uint8_t note[8]  = {0x2,0x3,0x2,0xe,0x1e,0xc,0x0};
+uint8_t clock[8] = {0x0,0xe,0x15,0x17,0x11,0xe,0x0};
+uint8_t heart[8] = {0x0,0xa,0x1f,0x1f,0xe,0x4,0x0};
+uint8_t duck[8]  = {0x0,0xc,0x1d,0xf,0xf,0x6,0x0};
+uint8_t check[8] = {0x0,0x1,0x3,0x16,0x1c,0x8,0x0};
+uint8_t cross[8] = {0x0,0x1b,0xe,0x4,0xe,0x1b,0x0};
+uint8_t retarrow[8] = {	0x1,0x1,0x5,0x9,0x1f,0x8,0x4};
+  
+LiquidCrystal_I2C lcd(0x27,20,4);  // set the LCD address to 0x27 for a 16 chars and 2 line display
 
-// include the library code:
-#include "Adafruit_LiquidCrystal.h"
-
-// Connect via i2c, default address #0 (A0-A2 not jumpered)
-Adafruit_LiquidCrystal lcd(0);
-
-void setup() {
-  Serial.begin(9600);
-  // while(!Serial);
-  Serial.println("LCD Character Backpack I2C Test.");
-
-  // set up the LCD's number of rows and columns:
-  if (!lcd.begin(16, 2)) {
-    Serial.println("Could not init backpack. Check wiring.");
-    while(1);
-  }
-  Serial.println("Backpack init'd.");
-
-  // Print a message to the LCD.
-  lcd.print("hello, world!");
+void setup()
+{
+  lcd.init();                      // initialize the lcd 
+  lcd.backlight();
+  
+  lcd.createChar(0, bell);
+  lcd.createChar(1, note);
+  lcd.createChar(2, clock);
+  lcd.createChar(3, heart);
+  lcd.createChar(4, duck);
+  lcd.createChar(5, check);
+  lcd.createChar(6, cross);
+  lcd.createChar(7, retarrow);
+  lcd.home();
+  
+  lcd.print("Hello world...");
+  lcd.setCursor(0, 1);
+  lcd.print(" i ");
+  lcd.printByte(3);
+  lcd.print(" arduinos!");
+  delay(5000);
+  displayKeyCodes();
+  
 }
 
-void loop() {
+// display all keycodes
+void displayKeyCodes(void) {
+  uint8_t i = 0;
+  while (1) {
+    lcd.clear();
+    lcd.print("Codes 0x"); lcd.print(i, HEX);
+    lcd.print("-0x"); lcd.print(i+15, HEX);
+    lcd.setCursor(0, 1);
+    for (int j=0; j<16; j++) {
+      lcd.printByte(i+j);
+    }
+    i+=16;
+    
+    delay(4000);
+  }
+}
 
-  // set the cursor to column 0, line 1
-  // (note: line 1 is the second row, since counting begins with 0):
-  lcd.setCursor(0, 1);
-  // print the number of seconds since reset:
-  lcd.print(millis()/1000);
+void loop()
+{
 
-  lcd.setBacklight(HIGH);
-  delay(500);
-  lcd.setBacklight(LOW);
-  delay(500);
 }
