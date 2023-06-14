@@ -22,6 +22,8 @@ bool buttonPressed = false;
 //solenoid
 const int solenoid = 7;
 
+//
+
 void setup() {
     Serial.begin(9600);
     pinMode(mMotor.pinPwm, OUTPUT);
